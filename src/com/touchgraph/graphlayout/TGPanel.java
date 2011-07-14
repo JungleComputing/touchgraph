@@ -910,7 +910,7 @@ public class TGPanel extends JPanel {
         update(g);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public synchronized void update(Graphics g) {
         Dimension d = getSize();
         if ((offscreen == null) || (d.width != offscreensize.width)
