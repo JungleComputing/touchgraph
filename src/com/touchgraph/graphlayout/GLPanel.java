@@ -419,7 +419,7 @@ public class GLPanel extends JPanel {
     private void setupDefaultBackgroundPopup() {
 
         glPopup = new PopupMenu();
-        // add(glPopup); // needed by JDK11 Popupmenu..
+        add(glPopup); // needed by JDK11 Popupmenu..
 
         MenuItem menuItem = new MenuItem("Toggle Controls");
         ActionListener toggleControlsAction = new ActionListener() {
@@ -671,7 +671,7 @@ public class GLPanel extends JPanel {
             tgPanel.setMaintainMouseOver(true);
             edgePopup.show(tgPanel, x, y);
         } else if (glPopup != null) {
-            // glPopup.show(tgPanel, x, y);
+            glPopup.show(tgPanel, x, y);
         }
     }   
 } // end com.touchgraph.graphlayout.GLPanel

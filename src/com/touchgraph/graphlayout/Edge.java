@@ -57,6 +57,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 
@@ -107,6 +108,8 @@ public class Edge {
     private String lbl = null;
 
     private int lblLenHalf = 0;
+
+    private static Stroke stroke = new BasicStroke((float) 2.0);
 
     // ............
 
@@ -360,7 +363,7 @@ public class Edge {
          * g.drawLine(x1, y1-3, x3, y3); g.drawLine(x1, y1-4, x3, y3);
          */
 
-        g.setStroke(new BasicStroke((float) 2.0));
+        g.setStroke(stroke);
 
         g.drawLine(x1, y1, x2, y2);
         
@@ -540,4 +543,7 @@ public class Edge {
         }
     }
 
+    protected void setStroke(Stroke stroke) {
+        this.stroke = stroke;
+    }
 } // end com.touchgraph.graphlayout.Edge

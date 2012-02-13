@@ -899,4 +899,8 @@ public class Node implements Comparable<Node> {
 	public int compareTo(Node arg0) {
 		return arg0.rank - rank;
 	}
+
+        public static Color getDefaultBorderInactiveColor() {
+                return DEFAULT_BORDER_INACTIVE_COLOR;
+        }
 } // end com.touchgraph.graphlayout.Node
