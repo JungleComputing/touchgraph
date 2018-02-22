@@ -1,7 +1,88 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id "com.jfrog.bintray" version "1.7.3"
 }
 
 version = '1.58'
+group = "junglecomputing"
 
+defaultTasks 'jar'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    // Added for stuff that is not in jcenter yet.
+    maven {
+	url 'https://dl.bintray.com/cerieljacobs/JungleComputing'
+    }
+}
+
+def pomConfig = {
+    scm {
+        url "https://github.com/junglecomputing/sshtrilead"
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+javadoc.failOnError = false
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+	    artifact sourcesJar {
+		classifier "sources"
+	    }
+	    artifact javadocJar {
+		classifier "javadoc"
+	    }
+	    groupId 'junglecomputing'
+	    artifactId 'touchgraph'
+
+	    pom.withXml {
+                def root = asNode()
+                root.appendNode('url', 'https://github.com/junglecomputing/sshtrilead')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+tasks.withType(Jar) {
+    destinationDir = file("$rootDir/lib")
+}
+
+bintray {
+    user = System.getenv('BINTRAY_NAME')
+    key = System.getenv('BINTRAY_APIKEY')
+    publications = ['mavenJava']
+    pkg {
+	repo = 'JungleComputing'
+	name = 'touchgraph'
+	userOrg = "$user"
+	vcsUrl = 'https://github.com/junglecomputing/touchgraph.git'
+	licenses = ['Apache-1.0']
+	// vcsTag = '1.58'
+	version {
+	    name = '1.58'
+	    desc = '1.58'
+	    released  = new Date()
+	}
+    }
+}
 
