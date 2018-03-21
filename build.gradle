@@ -5,7 +5,6 @@ plugins {
 }
 
 version = '1.58'
-group = "junglecomputing"
 
 defaultTasks 'jar'
 
@@ -21,7 +20,7 @@ repositories {
 
 def pomConfig = {
     scm {
-        url "https://github.com/junglecomputing/sshtrilead"
+        url "https://github.com/junglecomputing/touchgraph.git"
     }
 }
 
@@ -51,12 +50,13 @@ publishing {
 	    artifact javadocJar {
 		classifier "javadoc"
 	    }
-	    groupId 'junglecomputing'
+	    groupId 'nl.junglecomputing'
 	    artifactId 'touchgraph'
+	    version version
 
 	    pom.withXml {
                 def root = asNode()
-                root.appendNode('url', 'https://github.com/junglecomputing/sshtrilead')
+                root.appendNode('url', 'https://github.com/junglecomputing/touchgraph.git')
                 root.children().last() + pomConfig
             }
         }
@@ -78,11 +78,6 @@ bintray {
 	vcsUrl = 'https://github.com/junglecomputing/touchgraph.git'
 	licenses = ['Apache-1.0']
 	// vcsTag = '1.58'
-	version {
-	    name = '1.58'
-	    desc = '1.58'
-	    released  = new Date()
-	}
     }
 }
 
