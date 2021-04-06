@@ -1,21 +1,17 @@
 plugins {
     id 'java'
-    id 'maven-publish'
-    id "com.jfrog.bintray" version "1.7.3"
+    id 'maven'
+    id 'signing'
 }
 
 version = '1.58'
+group = "nl.junglecomputing"
+archivesBaseName = "touchgraph"
 
 defaultTasks 'jar'
 
 repositories {
-    mavenLocal()
     mavenCentral()
-    jcenter()
-    // Added for stuff that is not in jcenter yet.
-    maven {
-	url 'https://dl.bintray.com/cerieljacobs/JungleComputing'
-    }
 }
 
 def pomConfig = {
@@ -35,49 +31,60 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+signing {
+    sign configurations.archives
+}
+
 artifacts {
     archives sourcesJar
     archives javadocJar
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-	    artifact sourcesJar {
-		classifier "sources"
-	    }
-	    artifact javadocJar {
-		classifier "javadoc"
-	    }
-	    groupId 'nl.junglecomputing'
-	    artifactId 'touchgraph'
-	    version version
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-	    pom.withXml {
-                def root = asNode()
-                root.appendNode('url', 'https://github.com/junglecomputing/touchgraph.git')
-                root.children().last() + pomConfig
-            }
+      repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'TouchGraph'
+        packaging 'jar'
+        description 'This is a very old, and heavily modified version of the Touchgraph library. The original is developed by TouchGraph LLC (http://www.touchgraph.com/). We modified it significantly to improve performance and make it more suitable for our needs.'
+
+        url 'https://github.com/junglecomputing/touchgraph'
+
+        scm {
+          connection 'scm:git:git://github.com/junglecomputing/touchgraph.git'
+          developerConnection 'scm:git:ssh://github.com:junglecomputing/ossrh-demo.git'
+          url 'https://github.com/junglecomputing/touchgraph/tree/master'
         }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 1.0'
+            url 'http://www.apache.org/licenses/LICENSE-1.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            organization 'TouchGraph LLC'
+            url 'http://www.touchgraph.com'
+          }
+          developer {
+            name 'Ceriel Jacobs'
+            organization 'Vrije Universiteit Amsterdam'
+            url 'https://github.com/CerielJacobs'
+          }
+        }
+      }
     }
+  }
 }
-
-tasks.withType(Jar) {
-    destinationDir = file("$rootDir/lib")
-}
-
-bintray {
-    user = System.getenv('BINTRAY_NAME')
-    key = System.getenv('BINTRAY_APIKEY')
-    publications = ['mavenJava']
-    pkg {
-	repo = 'JungleComputing'
-	name = 'touchgraph'
-	userOrg = "$user"
-	vcsUrl = 'https://github.com/junglecomputing/touchgraph.git'
-	licenses = ['Apache-1.0']
-	// vcsTag = '1.58'
-    }
-}
-
