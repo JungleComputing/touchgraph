@@ -75,13 +75,13 @@ uploadArchives {
 
         developers {
           developer {
-            organization 'TouchGraph LLC'
-            url 'http://www.touchgraph.com'
+            organization = 'TouchGraph LLC'
+            url = 'http://www.touchgraph.com'
           }
           developer {
-            name 'Ceriel Jacobs'
-            organization 'Vrije Universiteit Amsterdam'
-            url 'https://github.com/CerielJacobs'
+            name = 'Ceriel Jacobs'
+            organization = 'Vrije Universiteit Amsterdam'
+            url = 'https://github.com/CerielJacobs'
           }
         }
       }
